@@ -142,7 +142,6 @@ function gamePlay() {
    //evaluateHand(game);
 }
 
-
 gamePlay();
 
 
