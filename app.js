@@ -35,6 +35,45 @@ function evaluateHand(hand) {
  return value;
 }
 
+// CARD ART
+const createCard = (rank, suit) => {
+    const heart = '♥'
+    const diamond = '♦'
+    const spade = '♠'
+    const club = '♣'
+    let suitArt = ''
+    switch (suit) {
+        case 'Hearts':
+            suitArt = heart
+            break
+        case 'Diamonds':
+            suitArt = diamond
+            break
+        case 'Spades':
+            suitArt = spade
+            break
+        case 'Clubs':
+            suitArt = club
+            break
+    }
+
+    let rankTop = ''
+    let rankBottom = ''
+
+    if (rank!=='10') {
+      rankTop = `${rank} `
+      rankBottom = ` ${rank}`
+    } else {
+      rankTop = `${rank}`
+      rankBottom = `${rank}`
+    }
+
+    const card = `.-------.\n|${rankTop}     |\n|   ${suitArt}   |\n|     ${rankBottom}|\n'-------'`
+    return card
+}
+
+// console.log(createCard('A', 'spades'))
+// console.log(createCard('10', 'spades'))
 
 //Create random card
 function dealCard() {
@@ -98,6 +137,14 @@ function gamePlay() {
     } else {
         let keepPlaying = true;
        
+        for (const card of game.dealerHand) {
+          console.log(createCard(card.rank, card.suit))
+        }
+        for (const card of game.playerHand) {
+          console.log(createCard(card.rank, card.suit))
+        }
+
+
         //Player's turn
         while (keepPlaying === true) {
            //Player turn
@@ -110,6 +157,14 @@ function gamePlay() {
                     break;
                 }
                 console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
+                //console.log(game.dealerHand.rank, game.dealerHand.suit)
+                for (const card of game.dealerHand) {
+                  console.log(createCard(card.rank, card.suit))
+                }
+                for (const card of game.playerHand) {
+                  console.log(createCard(card.rank, card.suit))
+                }
+                
             } else {
                 keepPlaying = false;
             }
@@ -143,10 +198,3 @@ function gamePlay() {
 }
 
 gamePlay();
-
-
-
-
-
-
-
