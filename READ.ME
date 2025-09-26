@@ -1,0 +1,186 @@
+Michael De Wit
+  12:17 PM
+hey all
+
+
+Cody McFarland
+  12:17 PM
+// Card and deck setup
+const suits = [':spades:', ':clubs:', ':hearts:', ':diamonds:'];
+const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+function createDeck() {
+  let deck = [];
+  for (let suit of suits) {
+    for (let value of values) {
+      deck.push({ value, suit });
+    }
+  }
+  return deck;
+}
+
+
+Eric Segev
+  12:21 PM
+https://www.asciiart.eu/miscellaneous/playing-cards
+
+asciiart.euasciiart.eu
+ASCII Art Playing cards - asciiart.eu
+A large collection of ASCII art drawings of playing cards and other related miscellaneous ASCII art pictures.
+
+
+Justin
+  12:40 PM
+hi
+12:40
+image.png
+ 
+image.png
+
+
+Cody McFarland
+  12:41 PM
+function getHandValue(hand) {
+  let value = 0;
+  let aces = 0;
+  for (let card of hand) {
+    if (card.value === 'A') {
+      aces += 1;
+    } else if (['J', 'Q', 'K'].includes(card.value)) {
+      value += 10;
+    } else {
+      value += parseInt(card.value);
+    }
+  }
+  for (let i = 0; i < aces; i++) {
+    if (value + 11 <= 21) {
+      value += 11;
+    } else {
+      value += 1;
+    }
+  }
+  return value;
+}
+
+
+Justin
+  12:44 PM
+Blackjack (also called 21) is one of the most popular casino card games. The rules are straightforward, but strategy and decisions make it exciting. Here’s a breakdown of the rules:
+Objective
+The goal is to have a hand value closer to 21 than the dealer’s without going over 21 (busting).
+If you bust, you automatically lose the round, even if the dealer busts too.
+Card Values
+Number cards (2–10): Face value (e.g., 7 = 7 points).
+Face cards (J, Q, K): 10 points each.
+Aces (A): Can be worth 1 or 11—whichever benefits your hand without busting.
+Setup
+Each player places a bet.
+Dealer gives two cards to each player and two to themselves:
+One dealer card is face up (the "upcard"),
+The other is face down (the "hole card").
+Player Actions
+After the initial deal, each player decides what to do:
+Hit: Take another card.
+Stand: Keep your current total; end your turn.
+Double Down: Double your bet, take one more card only, then stand.
+Split: If you have two cards of the same value, you can split them into two hands (requires another bet).
+Surrender (optional rule): Give up half your bet immediately and end your hand (not always offered).
+Dealer Rules
+Dealer reveals their hole card after all players finish.
+Dealer must hit until their hand totals at least 17.
+Some casinos require the dealer to hit on soft 17 (Ace + 6 = 17).
+Dealer must stand on totals of 17 or higher (unless above rule applies).
+Winning
+If you have a higher total than the dealer without busting, you win and are paid 1:1 (bet $10, win $10).
+Blackjack (Ace + 10-value card on first deal): Pays 3:2 (bet $10, win $15).
+If dealer and player tie, it’s a push (bet returned).
+If dealer busts, all remaining players win.
+Optional Side Rules
+Insurance: If the dealer's upcard is an Ace, players can bet half their original bet as insurance against the dealer having Blackjack. Pays 2:1 if dealer has it.
+Even Money: If you have Blackjack and the dealer shows an Ace, you can take even money (1:1) instead of risking a push.
+
+
+Eric Segev
+  3:04 PM
+:diamonds: :hearts: :spades: :clubs:
+3:06
+https://github.com/esegev1/terminal-game
+3:06
+git clone https://github.com/esegev1/intro-to-javascript-functions-lab.git
+3:07
+git clone https://github.com/esegev1/terminal-game.git
+
+
+Michael De Wit
+  3:13 PM
+image.png
+ 
+image.png
+
+
+Cody McFarland
+  3:15 PM
+console.log(`Dealer busted with a ${game.dealerHandValue}, you lose!`)
+Needs to be:
+console.log(`Dealer busted with a ${game.dealerHandValue}, you win!`)
+:+1:
+1
+
+
+
+Eric Segev
+  3:29 PM
+game: {
+ "dealerHand": [
+  {
+   "rank": "9",
+   "suit": "Spades"
+  },
+  {
+   "rank": "4",
+   "suit": "Diamonds"
+  }
+ ],
+ "playerHand": [
+  {
+   "rank": "4",
+   "suit": "Spades"
+  },
+  {
+   "rank": "Q",
+   "suit": "Spades"
+  },
+  {
+   "rank": "3",
+   "suit": "Hearts"
+  }
+ ],
+ "dealerHandValue": 13,
+ "playerHandValue": 17
+}
+
+
+Justin
+  3:47 PM
+https://github.com/justinclark-dev/terminal-blackjack
+
+
+Cody McFarland
+  4:18 PM
+if(game.playerHandValue > 21) {
+                    console.log(`Your total is ${game.playerHandValue}, so you bust! Dealer wins!`)
+                    keepPlaying = false;
+                    break;
+console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
+            } else {
+                keepPlaying = false;
+
+
+Cody McFarland
+  4:45 PM
+if (dealerHandValue > 21) {
+    console.log('Dealer busts! Player wins!');
+  } else if (playerHandValue > dealerHandValue) {
+    console.log('Player wins!');
+  } else if (dealerHandValue > playerHandValue) {
+    console.log('Dealer wins!');
+

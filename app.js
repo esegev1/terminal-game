@@ -1,13 +1,11 @@
 const prompt = require(`prompt-sync`)({sigint: true});
 const pokemon = require('./deck.js');
-// const fs = require(`fs`).promises;
-// const path = require('path');
-
+let wallet = 100;
 
 /******************************************************
-*        
-*                 Blackjack Game
-*
+*                                                     *
+*                 Blackjack Game.                     *
+*                                                     *
 *******************************************************/
 
 function printCards(dealerHand, playerHand) {
@@ -88,9 +86,6 @@ const createCard = (rank, suit) => {
     return card
 }
 
-// console.log(createCard('A', 'spades'))
-// console.log(createCard('10', 'spades'))
-
 //Create random card
 function dealCard() {
    const cards = {
@@ -98,21 +93,14 @@ function dealCard() {
        suits: ['Hearts', 'Diamonds', 'Clubs', 'Spades'],
    }
 
-
    const rankIdx = Math.round(Math.random() * 12)
    const suitIdx = Math.round(Math.random() * 3);
   
    const card = {};
    card.rank = cards.ranks[rankIdx]; 
    card.suit = cards.suits[suitIdx];
-   
-   // console.log(`${JSON.stringify(card, null, 2)}`);
-   // console.log(``);
-
 
    return card
-
-
 }
 
 
@@ -121,55 +109,56 @@ function buildHand() {
    const hand = [];
    hand.push(dealCard());
    hand.push(dealCard());
-   // console.log(hand);
-
 
    return hand;
 }
 
 
 function gamePlay() {
-   
+    
+    let wager = prompt(`Dealer: How much are you losing today sir? `);
+
+    wager = wager * 1 
+    
     //initialize cards
     const game = {
        dealerHand: buildHand(),
        playerHand: buildHand(),
-   };
-
+    };
+    
     //score hands
     game.dealerHandValue = evaluateHand(game.dealerHand);
     game.playerHandValue = evaluateHand(game.playerHand);
 
     printCards(game.dealerHand, game.playerHand);
-    // console.log(`Dealer Hand: ${game.dealerHandValue}, Player Hand: ${game.playerHandValue}`);
-
 
     //After scoring initial hand
     if(game.dealerHandValue === 21 && game.playerHandValue <21) {
-        console.log(`Dealer wins`);
+        console.log(`Dealer: Looks like I win`);
+        // wallet -= wager;
     } else if (game.dealerHandValue < 21 && game.playerHandValue === 21) {
-        console.log(`Player wins`);
+        console.log(`Dealer: Oh so you want to take my money!?!?`);
+        // wallet += wager;
     } else if (game.dealerHandValue === 21 && game.playerHandValue === 21) {
-        console.log(`Its a push`);
+        console.log(`Dealer: Its a push`);
     } else {
         let playerKeepPlaying = true;
         let playerLose = false;
-        // printCards(game.dealerHand, game.playerHand);
 
         //Player's turn
         while (playerKeepPlaying === true) {
-           //Player turn
             const hitCard = prompt('Do you want to hit? Y/N: ');
             if(hitCard.toLowerCase() === 'y') {
                 game.playerHand.push(dealCard()); 
                 game.playerHandValue = evaluateHand(game.playerHand);
                 if(game.playerHandValue > 21) {
                     console.log(`Your total is ${game.playerHandValue}, so you lose!`);
+                    // wallet -= wager;
                     playerLose = true;
                     break;
                 }
                 console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
-                console.log(game.dealerHand.rank, game.dealerHand.suit)
+                // console.log(game.dealerHand.rank, game.dealerHand.suit)
                 printCards(game.dealerHand, game.playerHand);
                 
             } else {
@@ -179,10 +168,9 @@ function gamePlay() {
 
         let dealerKeepPlaying = true;
         let dealerLose = false;
-        // console.log(`keepPlaying: ${playerKeepPlaying}, playerLose: ${playerLose}`);
+
         //Dealer's turn
         while(dealerKeepPlaying === true && playerLose === false) {
-            
             if(game.dealerHandValue >= 17 && game.dealerHandValue <= 21) {
                 console.log(`Dealer has ${game.dealerHandValue} and stands`); 
                 break;
@@ -191,7 +179,8 @@ function gamePlay() {
                 game.dealerHandValue = evaluateHand(game.dealerHand);
                 console.log(`Dealer pulled a ${game.dealerHand[game.dealerHand.length-1].rank}`);
             } else if (game.dealerHandValue > 21) {  
-                console.log(`Dealer busted with a ${game.dealerHandValue}`)
+                console.log(`Dealer: Oh rats!! I have ${game.dealerHandValue}, you take my money!`);
+                // wallet += wager;
                 dealerLose = true;
                 break;
             }
@@ -200,13 +189,17 @@ function gamePlay() {
         let winner;
         if(playerLose === true) {
             winner = `Dealer`;
+            wallet = wallet - wager;
         } else if (dealerLose === true) {
             winner = `Player`;
+            wallet = wallet + wager;
         } else {
             if(game.playerHandValue > game.dealerHandValue){
                 winner = `Player`;
+                wallet = wallet + wager;
             } else if (game.dealerHandValue > game.playerHandValue) {
                 winner = `Dealer`;
+                wallet = wallet - wager;
             } else {
                 winner = `No one`;
             }
@@ -214,7 +207,29 @@ function gamePlay() {
         console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
         console.log(`${winner} wins!`);
     }
-   
+    
+    console.log(`You now have ${wallet} dollar in your bank!`);
+
+    const playAgain = prompt(`Do you want to play another round? Y/N `);
+
+    if (playAgain.toLowerCase() === 'y') {
+        return true;
+    } else {
+        return false;
+    }
+    
 }
 
-gamePlay();
+
+console.log(`**********************************************************`);
+console.log(`|             Welcome to Gen Assembly's Casino           |`); 
+console.log(`**********************************************************`);
+console.log(``);
+let continuePlay = true;
+
+while(continuePlay) {
+    continuePlay = gamePlay();
+
+}
+
+console.log(`Thanks for stopping by to give me your money!`);
