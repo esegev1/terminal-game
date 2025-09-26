@@ -10,6 +10,22 @@ const pokemon = require('./deck.js');
 *
 *******************************************************/
 
+function printCards(dealerHand, playerHand) {
+    let dealerHandString = '';
+    let playerHandString = '';
+    
+    for (const card of dealerHand) {
+        dealerHandString += `${createCard(card.rank, card.suit)} `;
+        // onsole.log(createCard(card.rank, card.suit))
+        }
+    for (const card of playerHand) {
+        playerHandString += `${createCard(card.rank, card.suit)} `;
+        // console.log(createCard(card.rank, card.suit))
+    }
+    
+    console.log(`Dealer Hand: ${evaluateHand(dealerHand)}\n ${dealerHandString}`);
+    console.log(`Player Hand: ${evaluateHand(playerHand)}\n ${playerHandString}`);
+}
 
 //this function evaluates your hand, recieves array with card objs
 function evaluateHand(hand) {
@@ -68,7 +84,7 @@ const createCard = (rank, suit) => {
       rankBottom = `${rank}`
     }
 
-    const card = `.-------.\n|${rankTop}     |\n|   ${suitArt}   |\n|     ${rankBottom}|\n'-------'`
+    const card = `\n.-------.\n|${rankTop}     |\n|   ${suitArt}   |\n|     ${rankBottom}|\n'-------'\n`
     return card
 }
 
@@ -124,7 +140,8 @@ function gamePlay() {
     game.dealerHandValue = evaluateHand(game.dealerHand);
     game.playerHandValue = evaluateHand(game.playerHand);
 
-    console.log(`Dealer Hand: ${game.dealerHandValue}, Player Hand: ${game.playerHandValue}`);
+    printCards(game.dealerHand, game.playerHand);
+    // console.log(`Dealer Hand: ${game.dealerHandValue}, Player Hand: ${game.playerHandValue}`);
 
 
     //After scoring initial hand
@@ -135,18 +152,12 @@ function gamePlay() {
     } else if (game.dealerHandValue === 21 && game.playerHandValue === 21) {
         console.log(`Its a push`);
     } else {
-        let keepPlaying = true;
-       
-        for (const card of game.dealerHand) {
-          console.log(createCard(card.rank, card.suit))
-        }
-        for (const card of game.playerHand) {
-          console.log(createCard(card.rank, card.suit))
-        }
-
+        let playerKeepPlaying = true;
+        let playerLose = false;
+        // printCards(game.dealerHand, game.playerHand);
 
         //Player's turn
-        while (keepPlaying === true) {
+        while (playerKeepPlaying === true) {
            //Player turn
             const hitCard = prompt('Do you want to hit? Y/N: ');
             if(hitCard.toLowerCase() === 'y') {
@@ -154,28 +165,25 @@ function gamePlay() {
                 game.playerHandValue = evaluateHand(game.playerHand);
                 if(game.playerHandValue > 21) {
                     console.log(`Your total is ${game.playerHandValue}, so you lose!`);
+                    playerLose = true;
                     break;
                 }
                 console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
-                //console.log(game.dealerHand.rank, game.dealerHand.suit)
-                for (const card of game.dealerHand) {
-                  console.log(createCard(card.rank, card.suit))
-                }
-                for (const card of game.playerHand) {
-                  console.log(createCard(card.rank, card.suit))
-                }
+                console.log(game.dealerHand.rank, game.dealerHand.suit)
+                printCards(game.dealerHand, game.playerHand);
                 
             } else {
-                keepPlaying = false;
+                playerKeepPlaying = false;
             }
-        
-        
         }
-        keepPlaying = true;
+
+        let dealerKeepPlaying = true;
+        let dealerLose = false;
+        // console.log(`keepPlaying: ${playerKeepPlaying}, playerLose: ${playerLose}`);
         //Dealer's turn
-        while(keepPlaying === true) {
+        while(dealerKeepPlaying === true && playerLose === false) {
             
-            if(game.dealerHandValue >= 17) {
+            if(game.dealerHandValue >= 17 && game.dealerHandValue <= 21) {
                 console.log(`Dealer has ${game.dealerHandValue} and stands`); 
                 break;
             } else if (game.dealerHandValue < 17) {
@@ -183,18 +191,30 @@ function gamePlay() {
                 game.dealerHandValue = evaluateHand(game.dealerHand);
                 console.log(`Dealer pulled a ${game.dealerHand[game.dealerHand.length-1].rank}`);
             } else if (game.dealerHandValue > 21) {  
-                console.log(`Dealer busted with a ${game.dealerHandValue}, you lose!`)
+                console.log(`Dealer busted with a ${game.dealerHandValue}`)
+                dealerLose = true;
                 break;
             }
         }
+        
+        let winner;
+        if(playerLose === true) {
+            winner = `Dealer`;
+        } else if (dealerLose === true) {
+            winner = `Player`;
+        } else {
+            if(game.playerHandValue > game.dealerHandValue){
+                winner = `Player`;
+            } else if (game.dealerHandValue > game.playerHandValue) {
+                winner = `Dealer`;
+            } else {
+                winner = `No one`;
+            }
+        }
         console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
+        console.log(`${winner} wins!`);
     }
    
-//    checkBlackjack(game);
-//    console.log(`game: ${JSON.stringify(game, null, 2)}`);
-
-
-   //evaluateHand(game);
 }
 
 gamePlay();
