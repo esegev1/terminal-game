@@ -7,48 +7,6 @@ let wallet = 100;
 *                 Blackjack Game.                     *
 *                                                     *
 *******************************************************/
-
-function printCards(dealerHand, playerHand) {
-    let dealerHandString = '';
-    let playerHandString = '';
-    
-    for (const card of dealerHand) {
-        dealerHandString += `${createCard(card.rank, card.suit)} `;
-        // onsole.log(createCard(card.rank, card.suit))
-        }
-    for (const card of playerHand) {
-        playerHandString += `${createCard(card.rank, card.suit)} `;
-        // console.log(createCard(card.rank, card.suit))
-    }
-    
-    console.log(`Dealer Hand: ${evaluateHand(dealerHand)}\n ${dealerHandString}`);
-    console.log(`Player Hand: ${evaluateHand(playerHand)}\n ${playerHandString}`);
-}
-
-//this function evaluates your hand, recieves array with card objs
-function evaluateHand(hand) {
- let value = 0;
- let aces = 0;
-
- for (let card of hand) {
-   if (card.rank === 'A') {
-     aces += 1;
-   } else if (['J', 'Q', 'K'].includes(card.rank)) {
-     value += 10;
-   } else {
-     value += parseInt(card.rank);
-   }
- }
- for (let i = 0; i < aces; i++) {
-   if (value + 11 <= 21) {
-     value += 11;
-   } else {
-     value += 1;
-   }
- }
- return value;
-}
-
 // CARD ART
 const createCard = (rank, suit) => {
     const heart = '♥'
@@ -82,9 +40,77 @@ const createCard = (rank, suit) => {
       rankBottom = `${rank}`
     }
 
-    const card = `\n.-------.\n|${rankTop}     |\n|   ${suitArt}   |\n|     ${rankBottom}|\n'-------'\n`
+    let card = []
+
+    if (suit==='Hearts'||suit==='Diamonds') {
+         card = [
+            `\x1b[47m\x1b[30m.-------.\x1b[0m`,
+            `\x1b[47m\x1b[30m|\x1b[31m${rankTop}\x1b[30m     |\x1b[0m`,
+            `\x1b[47m\x1b[30m|   \x1b[31m${suitArt}\x1b[30m   |\x1b[0m`,
+            `\x1b[47m\x1b[30m|     \x1b[31m${rankBottom}\x1b[30m|\x1b[0m`,
+            `\x1b[47m\x1b[30m'-------'\x1b[0m`
+        ]
+    } else {
+        card = [
+            `\x1b[47m\x1b[30m.-------.\x1b[0m`,
+            `\x1b[47m\x1b[30m|${rankTop}     |\x1b[0m`,
+            `\x1b[47m\x1b[30m|   ${suitArt}   |\x1b[0m`,
+            `\x1b[47m\x1b[30m|     ${rankBottom}|\x1b[0m`,
+            `\x1b[47m\x1b[30m'-------'\x1b[0m`
+        ]    
+    }
+    
     return card
 }
+
+function printCards(user, handOfCards) {
+        
+    let row1 = ''
+    let row2 = ''
+    let row3 = ''
+    let row4 = ''
+    let row5 = ''
+    
+    console.log(`${user} Hand: ${evaluateHand(handOfCards)}\n`);
+
+    for (const card of handOfCards) {
+        const cardArray = createCard(card.rank, card.suit)
+        row1 += `${cardArray[0]}`
+        row2 += `${cardArray[1]}`
+        row3 += `${cardArray[2]}`
+        row4 += `${cardArray[3]}`
+        row5 += `${cardArray[4]}`       
+    }
+ 
+    const handString = `${row1}\n${row2}\n${row3}\n${row4}\n${row5}\n`
+    console.log(handString)
+}
+
+//this function evaluates your hand, recieves array with card objs
+function evaluateHand(hand) {
+ let value = 0;
+ let aces = 0;
+
+ for (let card of hand) {
+   if (card.rank === 'A') {
+     aces += 1;
+   } else if (['J', 'Q', 'K'].includes(card.rank)) {
+     value += 10;
+   } else {
+     value += parseInt(card.rank);
+   }
+ }
+ for (let i = 0; i < aces; i++) {
+   if (value + 11 <= 21) {
+     value += 11;
+   } else {
+     value += 1;
+   }
+ }
+ return value;
+}
+
+
 
 //Create random card
 function dealCard() {
@@ -117,6 +143,7 @@ function buildHand() {
 function gamePlay() {
     
     let wager = prompt(`Dealer: How much are you losing today sir? `);
+    console.log(``)
 
     wager = wager * 1 
     
@@ -130,7 +157,8 @@ function gamePlay() {
     game.dealerHandValue = evaluateHand(game.dealerHand);
     game.playerHandValue = evaluateHand(game.playerHand);
 
-    printCards(game.dealerHand, game.playerHand);
+    printCards('Dealer', game.dealerHand);
+    printCards('Player', game.playerHand);
 
     //After scoring initial hand
     if(game.dealerHandValue === 21 && game.playerHandValue <21) {
@@ -159,7 +187,8 @@ function gamePlay() {
                 }
                 console.log(`Dealer: ${game.dealerHandValue}, Player: ${game.playerHandValue}`);
                 // console.log(game.dealerHand.rank, game.dealerHand.suit)
-                printCards(game.dealerHand, game.playerHand);
+                printCards('Dealer', game.dealerHand);
+                printCards('Player', game.playerHand);
                 
             } else {
                 playerKeepPlaying = false;
